@@ -27,12 +27,12 @@ cd bash-automation-scripts-practice-
 ---
 
 ### 2️⃣ Make the script executable
-```bash
+
 chmod +x basic_bash.sh
 
 ---
 
 ### 3️⃣ Run the script
-```bash
+
 ./basic_bash.sh
 
