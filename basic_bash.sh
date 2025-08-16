@@ -13,3 +13,8 @@ mkdir practice
 
 # directs to the practice director
 cd practice
+
+# creates a file 
+touch test1.txt
+
+
