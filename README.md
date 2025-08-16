@@ -24,13 +24,11 @@ The scripts start from basic examples and gradually move toward more useful auto
 git clone https://github.com/ani12004/bash-automation-scripts-practice-.git
 cd bash-automation-scripts-practice- 
 ```
----
 
 2️⃣ Make the script executable
 ```bash
 chmod +x basic_bash.sh
 ```
----
 
 3️⃣ Run the script
 ```bash
