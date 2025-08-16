@@ -26,13 +26,10 @@ cd bash-automation-scripts-practice-
 
 ---
 
-### 2️⃣ Make the script executable
-
+2️⃣ Make the script executable
 chmod +x basic_bash.sh
 
 ---
 
-### 3️⃣ Run the script
-
+3️⃣ Run the script
 ./basic_bash.sh
-
