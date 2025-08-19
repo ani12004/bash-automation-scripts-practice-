@@ -8,6 +8,7 @@ The scripts start from basic examples and gradually move toward more useful auto
 ## 📂 Repository Structure
 - `basic_bash.sh` → Basic file creation script (more to come)
 - `README.md` → Documentation
+- `to_install_ubuntu.sh` → For installing ubuntu
 
 ---
 
