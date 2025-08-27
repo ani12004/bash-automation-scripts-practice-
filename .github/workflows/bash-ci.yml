@@ -1,0 +1,77 @@
+# .github/workflows/bash-ci.yml
+
+# A human-readable name for your workflow
+name: Bash Script CI
+
+# --------------------------------------------------------------------------
+# TRIGGER: When does this workflow run?
+# --------------------------------------------------------------------------
+# This workflow runs on any push or pull request to the 'main' branch.
+# You can customize this to fit your branching strategy (e.g., 'master', 'develop').
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+# --------------------------------------------------------------------------
+# JOBS: What tasks should be performed?
+# --------------------------------------------------------------------------
+jobs:
+  lint-and-test:
+    # Use the latest Ubuntu runner provided by GitHub
+    runs-on: ubuntu-latest
+
+    # ----------------------------------------------------------------------
+    # ENVIRONMENT VARIABLES
+    # ----------------------------------------------------------------------
+    # IMPORTANT: Change this to the path where your scripts are located.
+    env:
+      SCRIPT_DIR: ./scripts
+
+    # ----------------------------------------------------------------------
+    # STEPS: The sequence of actions for this job
+    # ----------------------------------------------------------------------
+    steps:
+      # Step 1: Check out your repository code
+      # This action allows the workflow to access your code.
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      # Step 2: Install ShellCheck and shfmt
+      # These are the tools we'll use for linting and formatting.
+      - name: Install ShellCheck and shfmt
+        run: sudo apt-get update && sudo apt-get install -y shellcheck shfmt
+
+      # Step 3: Make all scripts executable
+      # This is a good practice step to ensure run permissions are set correctly.
+      - name: Make scripts executable
+        run: find ${{ env.SCRIPT_DIR }} -name "*.sh" -exec chmod +x {} \;
+
+      # Step 4: Lint scripts with ShellCheck
+      # This will find common bugs and issues in your shell scripts.
+      # The workflow will fail if ShellCheck finds any problems.
+      - name: Lint scripts with ShellCheck ✅
+        run: shellcheck ${{ env.SCRIPT_DIR }}/*.sh
+
+      # Step 5: Check formatting with shfmt
+      # The '-d' flag checks if any files would be reformatted.
+      # If they would, it prints a diff and exits with an error, failing the check.
+      - name: Check formatting with shfmt 💅
+        run: shfmt -d ${{ env.SCRIPT_DIR }}
+
+      # Step 6: Run your tests
+      # --------------------------------------------------------------------
+      # IMPORTANT: This is a placeholder step!
+      # You should replace the command below with your actual test suite.
+      # For example, you might have a dedicated test script: `bash tests/run_all.sh`
+      # Or you might run each script and check its output or exit code.
+      # --------------------------------------------------------------------
+      - name: Run tests ⚙️
+        run: |
+          echo "Running basic execution test for all scripts..."
+          for script in ${{ env.SCRIPT_DIR }}/*.sh; do
+            echo "--- Running $script ---"
+            bash "$script"
+            # Add more robust checks here, e.g., verifying output
+          done
