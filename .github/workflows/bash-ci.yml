@@ -1,66 +1,57 @@
 # .github/workflows/bash-ci.yml
 
-# A human-readable name for your workflow
 name: Bash Script CI
 
-# This workflow runs on any push or pull request to the 'main' branch.
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+# This workflow runs on any push to any branch.
+on: [push]
 
-# Defines the tasks to be performed.
 jobs:
-  lint-and-test:
-    # Use the latest Ubuntu runner provided by GitHub.
-    runs-on: ubuntu-latest
+  # The main job is called 'test-scripts'.
+  test-scripts:
+    # Use a matrix strategy to run on multiple operating systems.
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-20.04]
+
+    # Define the runner based on the matrix variable.
+    runs-on: ${{ matrix.os }}
 
     # Environment variable pointing to the location of your scripts.
     # Set to '.' because your scripts are in the root directory.
     env:
       SCRIPT_DIR: .
 
-    # The sequence of actions for this job.
     steps:
-      # Step 1: Check out your repository code so the workflow can access it.
+      # Step 1: Check out your repository code.
       - name: Check out repository code
         uses: actions/checkout@v4
 
-      # Step 2: Install the tools we'll use for linting and formatting.
-      - name: Install ShellCheck and shfmt
-        run: sudo apt-get update && sudo apt-get install -y shellcheck shfmt
-
-      # Step 3: Make all script files executable.
-      # Uses 'find' to act only on files ending with .sh.
-      - name: Make scripts executable
-        run: find ${{ env.SCRIPT_DIR }} -type f -name "*.sh" -exec chmod +x {} +
-
-      # Step 4: Lint scripts to find common bugs and issues.
-      # This command safely handles cases where no .sh files might exist.
-      - name: Lint scripts with ShellCheck ✅
-        run: find ${{ env.SCRIPT_DIR }} -type f -name "*.sh" -exec shellcheck {} +
-
-      # Step 5: Check if scripts are formatted correctly.
-      # The '-d' flag fails the job if any file needs reformatting.
-      - name: Check formatting with shfmt 💅
-        run: shfmt -d ${{ env.SCRIPT_DIR }}
-
-      # Step 6: Run your tests.
-      # This is a placeholder that you should customize with your actual tests.
-      - name: Run tests ⚙️
+      # Step 2: Install dependencies (shellcheck and shfmt).
+      - name: Install dependencies
         run: |
-          # First, check if there are any scripts to test.
-          if ! find "${{ env.SCRIPT_DIR }}" -type f -name "*.sh" -print -quit | grep -q .; then
-            echo "No shell scripts found to test."
-            exit 0
-          fi
-          
-          echo "Running basic execution test for all scripts..."
+          sudo apt-get update
+          sudo apt-get install -y shellcheck shfmt
+
+      # Step 3: Run linter and formatter checks.
+      # This is similar to running tests in the Python example.
+      - name: Lint and Format Check
+        run: |
+          echo "Running ShellCheck linter..."
+          find ${{ env.SCRIPT_DIR }} -type f -name "*.sh" -exec shellcheck {} +
+
+          echo "Checking formatting with shfmt..."
+          shfmt -d ${{ env.SCRIPT_DIR }}
+
+      # Step 4: Run the scripts as a basic execution test.
+      - name: Run Scripts (Basic Test)
+        run: |
+          echo "Making scripts executable..."
+          find ${{ env.SCRIPT_DIR }} -type f -name "*.sh" -exec chmod +x {} +
+
+          echo "Running scripts..."
           for script in ${{ env.SCRIPT_DIR }}/*.sh; do
-            # Ensure we are only trying to run actual files.
             if [ -f "$script" ]; then
-              echo "--- Running $script ---"
+              echo "--- Running $script on ${{ matrix.os }} ---"
               bash "$script"
             fi
           done
