@@ -1,20 +1,21 @@
 #!/bin/bash
 
-################################
+##################################
 # Author: Anil
-# Date: 16 jan 2025
+# Date: 16 Jan 2025
 #
-#
-# This file create a director and and also redirects into it.
-################################
+# This file creates a directory and then creates a file inside it.
+##################################
 
-# create a director named practce
-mkdir practice
+# Create a directory named practice
+# The '-p' flag prevents errors if the directory already exists.
+mkdir -p practice
 
-# directs to the practice director
-cd practice
+# Directs to the practice directory
+# The '|| exit' command will stop the script if cd fails.
+cd practice || exit
 
-# creates a file 
+# Creates a file
 touch test1.txt
 
-
+echo "Successfully created test1.txt inside the practice directory."
